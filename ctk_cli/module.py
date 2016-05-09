@@ -347,6 +347,8 @@ class CLIParameter(object):
             except ValueError, e:
                 logger.warning('Could not parse default value of <%s> (%s): %s' % (
                     _tag(elementTree), self.name, e))
+        elif self.isVector():
+            self.default = list()
 
         if self.typ.endswith('-enumeration'):
             try:
