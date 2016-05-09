@@ -162,26 +162,29 @@ class CLIArgumentParser(argparse.ArgumentParser):
 
             cur_kwargs = {
                 'dest': param.name,
-                'type': param.parseValue,
                 'help': param.description,
             }
 
-            if param.elements is not None:
-                cur_kwargs['choices'] = param.elements
+            if param.typ == 'boolean':
+                cur_kwargs['action'] = 'store_true'
+                cur_kwargs['default'] = False
+                cur_kwargs['help'] += ' (default: %s)' % False
             else:
-                cur_kwargs['metavar'] = '<%s>' % param.typ
+                cur_kwargs['type'] = param.parseValue
+                if param.elements is not None:
+                    cur_kwargs['choices'] = param.elements
+                else:
+                    cur_kwargs['metavar'] = '<%s>' % param.typ
 
-            if param.multiple:
-                cur_kwargs['action'] = 'append'
-                cur_kwargs['help'] += ' (accepted multiple times)'
-
-            if param.default is not None:
-                cur_kwargs['default'] = param.default
-                cur_kwargs['help'] += ' (default: %s)' % param.default
-
-            if param.fileExtensions is not None:
-                cur_kwargs['help'] +=\
-                    ' (file-extensions: %s)' % param.fileExtensions
+                if param.multiple:
+                    cur_kwargs['action'] = 'append'
+                    cur_kwargs['help'] += ' (accepted multiple times)'
+                if param.default is not None:
+                    cur_kwargs['default'] = param.default
+                    cur_kwargs['help'] += ' (default: %s)' % param.default
+                if param.fileExtensions is not None:
+                    cur_kwargs['help'] +=\
+                        ' (file-extensions: %s)' % param.fileExtensions
 
             self.add_argument(*cur_args, **cur_kwargs)
 
